@@ -91,7 +91,7 @@ function Navbar() {
     <header className="bg-[#0b132b]/95 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link to="/" className="text-xl font-bold text-white flex items-center gap-3 hover:opacity-90 transition-opacity">
-          <CompanyLogo className="w-12 h-10" />
+          <CompanyLogo className="w-25 h-20" />
         </Link>
 
         <nav className="hidden lg:flex items-center space-x-7 text-sm text-slate-300 font-medium">
