@@ -180,8 +180,8 @@ function Footer() {
           <h4 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Corporate Office</h4>
           <p className="text-sm leading-relaxed text-slate-400">
             Office No. 1812, 18th Floor, Tower C, Bhutani Alphathum, Sector 90, Noida, Gautam Buddha Nagar, Uttar Pradesh, India<br />
-            <a href="mailto:info@dreamwastesolutions.com" className="text-emerald-400 hover:underline font-medium inline-flex items-center gap-1.5 mt-3">
-              <Mail className="w-4 h-4" /> info@dreamwastesolutions.com
+            <a href="mailto:Usman@dreamwastesolutions.com" className="text-emerald-400 hover:underline font-medium inline-flex items-center gap-1.5 mt-3">
+              <Mail className="w-4 h-4" /> Usman@dreamwastesolutions.com
             </a>
           </p>
         </div>
@@ -700,6 +700,7 @@ function GoalsPage() {
   );
 }
 
+
 // 8. CONTACT / REQUEST PICKUP PAGE
 function ContactPage() {
   const [formData, setFormData] = useState({
@@ -712,18 +713,82 @@ function ContactPage() {
     requirement: ''
   });
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Thank you, ${formData.contactPerson}. Your inquiry for ${formData.companyName} has been received.`);
+
+    setIsSubmitting(true);
+    setSubmitMessage('');
+    setIsSuccess(false);
+
+    try {
+      const response = await fetch(
+        'https://api.web3forms.com/submit',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({
+            access_key: '6cc4433c-8a46-4077-b4e5-c57644168ff4',
+            subject: `New Business Inquiry - ${formData.companyName}`,
+            from_name: 'Dream Waste Solutions Website',
+            replyto: formData.email,
+            ...formData
+          })
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setIsSuccess(true);
+        setSubmitMessage(
+          'Thank you! Your business inquiry has been sent successfully.'
+        );
+
+        setFormData({
+          companyName: '',
+          contactPerson: '',
+          email: '',
+          city: '',
+          wasteType: 'IT Hardware & Laptops',
+          approxQuantity: '',
+          requirement: ''
+        });
+      } else {
+        setSubmitMessage(
+          result.message ||
+          'Unable to send your inquiry. Please try again.'
+        );
+      }
+    } catch (error) {
+      setSubmitMessage(
+        'A network error occurred. Please check your connection and try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <PageWrapper>
       <div className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-emerald-600 font-semibold text-xs uppercase tracking-wider">Inquiry & Scheduling</span>
-          <h1 className="text-4xl font-black text-slate-900 mt-2 mb-4">Request a Pickup / Business Inquiry</h1>
-          <p className="text-slate-600">Fill out your organizational requirements below to receive a formal commercial quote or schedule reverse logistics.</p>
+          <span className="text-emerald-600 font-semibold text-xs uppercase tracking-wider">
+            Inquiry & Scheduling
+          </span>
+          <h1 className="text-4xl font-black text-slate-900 mt-2 mb-4">
+            Request a Pickup / Business Inquiry
+          </h1>
+          <p className="text-slate-600">
+            Fill out your organizational requirements below to receive a
+            formal commercial quote or schedule reverse logistics.
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-12">
@@ -732,23 +797,38 @@ function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">Company Name *</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    Company Name *
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.companyName}
-                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        companyName: e.target.value
+                      })
+                    }
                     placeholder="Enterprise Pvt Ltd"
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   />
                 </div>
+
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">Contact Person *</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    Contact Person *
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.contactPerson}
-                    onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        contactPerson: e.target.value
+                      })
+                    }
                     placeholder="John Doe"
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   />
@@ -757,23 +837,38 @@ function ContactPage() {
 
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">Email Address *</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    Email Address *
+                  </label>
                   <input
                     type="email"
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        email: e.target.value
+                      })
+                    }
                     placeholder="john@company.com"
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   />
                 </div>
+
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">City / Location *</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    City / Location *
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        city: e.target.value
+                      })
+                    }
                     placeholder="Noida / Gurgaon / Mumbai"
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   />
@@ -782,10 +877,17 @@ function ContactPage() {
 
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">Primary E-Waste Category</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    Primary E-Waste Category
+                  </label>
                   <select
                     value={formData.wasteType}
-                    onChange={(e) => setFormData({ ...formData, wasteType: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        wasteType: e.target.value
+                      })
+                    }
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   >
                     <option>IT Hardware & Laptops</option>
@@ -795,12 +897,20 @@ function ContactPage() {
                     <option>Mixed Electronics Scrap</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="text-xs font-bold text-slate-700 uppercase">Approximate Quantity / Weight</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">
+                    Approximate Quantity / Weight
+                  </label>
                   <input
                     type="text"
                     value={formData.approxQuantity}
-                    onChange={(e) => setFormData({ ...formData, approxQuantity: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        approxQuantity: e.target.value
+                      })
+                    }
                     placeholder="e.g. 50 Laptops, 500 kg, or 2 Tons"
                     className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
                   />
@@ -808,21 +918,46 @@ function ContactPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 uppercase">Detailed Requirement</label>
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Detailed Requirement
+                </label>
                 <textarea
                   rows="4"
                   value={formData.requirement}
-                  onChange={(e) => setFormData({ ...formData, requirement: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      requirement: e.target.value
+                    })
+                  }
                   placeholder="Provide any specific requirements such as on-site data wiping or EPR credit needs..."
                   className="w-full mt-1.5 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
-                ></textarea>
+                />
               </div>
 
+              {/* Submission status */}
+              {submitMessage && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`text-sm font-medium rounded-xl border p-4 ${isSuccess
+                      ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
+                      : 'text-red-700 bg-red-50 border-red-200'
+                    }`}
+                >
+                  {submitMessage}
+                </div>
+              )}
+
+              {/* Submit button */}
               <button
                 type="submit"
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-emerald-500/25 transition-all text-sm uppercase tracking-wider"
+                disabled={isSubmitting}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold py-4 rounded-xl shadow-lg shadow-emerald-500/25 transition-all text-sm uppercase tracking-wider"
               >
-                Submit Business Inquiry
+                {isSubmitting
+                  ? 'Sending Inquiry...'
+                  : 'Submit Business Inquiry'}
               </button>
             </form>
           </div>
@@ -830,15 +965,20 @@ function ContactPage() {
           {/* Location Sidebar */}
           <div className="lg:col-span-5 space-y-6 flex flex-col justify-between">
             <div className="bg-slate-900 text-white p-8 rounded-3xl border border-slate-800 space-y-6 shadow-lg">
-              <h3 className="text-xl font-bold text-emerald-400">Official Communications</h3>
+              <h3 className="text-xl font-bold text-emerald-400">
+                Official Communications
+              </h3>
 
               <div className="space-y-4 text-sm">
                 <div className="flex items-start gap-4">
                   <MapPin className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-bold text-slate-200">Corporate Office</p>
+                    <p className="font-bold text-slate-200">
+                      Corporate Office
+                    </p>
                     <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">
-                      Office No. 1812, 18th Floor, Tower C, Bhutani Alphathum, Sector 90, Noida, Uttar Pradesh, India
+                      Office No. 1812, 18th Floor, Tower C, Bhutani
+                      Alphathum, Sector 90, Noida, Uttar Pradesh, India
                     </p>
                   </div>
                 </div>
@@ -846,9 +986,12 @@ function ContactPage() {
                 <div className="flex items-start gap-4 pt-4 border-t border-slate-800">
                   <Factory className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-bold text-slate-200">Factory Facility</p>
+                    <p className="font-bold text-slate-200">
+                      Factory Facility
+                    </p>
                     <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">
-                      Khasra No. 575, Village Panwari, Tehsil Sardhana, Meerut, Uttar Pradesh – 250342
+                      Khasra No. 575, Village Panwari, Tehsil Sardhana,
+                      Meerut, Uttar Pradesh – 250342
                     </p>
                   </div>
                 </div>
@@ -856,9 +999,14 @@ function ContactPage() {
                 <div className="flex items-start gap-4 pt-4 border-t border-slate-800">
                   <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-bold text-slate-200">Official Email</p>
-                    <a href="mailto:info@dreamwastesolutions.com" className="text-emerald-400 text-xs hover:underline font-medium">
-                      info@dreamwastesolutions.com
+                    <p className="font-bold text-slate-200">
+                      Official Email
+                    </p>
+                    <a
+                      href="mailto:Usman@dreamwastesolutions.com"
+                      className="text-emerald-400 text-xs hover:underline font-medium"
+                    >
+                      Usman@dreamwastesolutions.com
                     </a>
                   </div>
                 </div>
@@ -872,9 +1020,9 @@ function ContactPage() {
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allowFullScreen=""
+                allowFullScreen
                 loading="lazy"
-              ></iframe>
+              />
             </div>
           </div>
         </div>
@@ -882,6 +1030,7 @@ function ContactPage() {
     </PageWrapper>
   );
 }
+
 
 // Router Container
 function AnimatedRoutes() {

@@ -221,7 +221,7 @@ export default function LandingPage() {
                         <Link to="/contact" className="bg-slate-900 hover:bg-slate-950 text-white font-bold px-7 py-3.5 rounded-xl transition-all shadow-xl text-sm">
                             Schedule a Pickup
                         </Link>
-                        <a href="tel:+919876543210" className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-7 py-3.5 rounded-xl transition-all text-sm flex items-center gap-2">
+                        <a href="tel:+918510000146" className="bg-white text-emerald-900 hover:bg-emerald-50 font-bold px-7 py-3.5 rounded-xl transition-all text-sm flex items-center gap-2">
                             <Phone className="w-4 h-4" /> Call Direct
                         </a>
                     </div>
