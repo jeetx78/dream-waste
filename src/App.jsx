@@ -267,7 +267,7 @@ function HomePage() {
           <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }} className="relative">
             <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl relative group">
               <img
-                src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=800"
+                src="https://unsplash.com/photos/green-and-black-circuit-board-LrdVFlk4CJ8?auto=format&fit=crop&q=80&w=800"
                 alt="Electronic waste management"
                 className="w-full object-cover h-[460px] group-hover:scale-105 transition-transform duration-700 ease-out"
               />
